@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-svc ## имя сервиса
+  namespace: fullstack
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: "192.168.10.246"
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend     # <-- ДОЛЖНО СОВПАДАТЬ с Deployment
+  ports:
+    - protocol: TCP
+      port: 80        # <-- внешний порт
+      targetPort: 80  # <-- порт контейнера

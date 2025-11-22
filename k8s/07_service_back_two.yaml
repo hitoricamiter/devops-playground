@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc-2
+  namespace: fullstack
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: "192.168.10.245"
+spec:
+  type: LoadBalancer
+  selector:
+    app: server2
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082

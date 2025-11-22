@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Products Frontend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin: 5px 0;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #hiMessage {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px dashed #333;
+            border-radius: 5px;
+            display: inline-block;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Products [Not ConfigMap]</h1>
+    <button id="seedBtn">Seed Database</button>
+    <button id="loadBtn">Load Products</button>
+    <button id="clearBtn">Clear Products</button>
+    <button id="hiBtn">Hi</button>
+    <button id="clearHiBtn">Clear Hi</button> <!-- Новая кнопка -->
+    <ul id="productsList"></ul>
+
+    <!-- Элемент для отображения ответа /hi -->
+    <div id="hiMessage"></div>
+
+    <script>
+        const seedBtn = document.getElementById('seedBtn');
+        const loadBtn = document.getElementById('loadBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const hiBtn = document.getElementById('hiBtn');
+        const clearHiBtn = document.getElementById('clearHiBtn'); // новая кнопка
+        const productsList = document.getElementById('productsList');
+        const hiMessage = document.getElementById('hiMessage');
+
+        // Seed
+        seedBtn.addEventListener('click', () => {
+            fetch('api.playground.zaikin/products/seed')
+                .then(response => response.json())
+                .then(data => {
+                    alert('Database seeded!');
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Error seeding database');
+                });
+        });
+
+        // Load
+        loadBtn.addEventListener('click', () => {
+            fetch('api.playground.zaikin/products/')
+                .then(response => response.json())
+                .then(products => {
+                    productsList.innerHTML = '';
+                    products.forEach(p => {
+                        const li = document.createElement('li');
+                        li.textContent = `${p.name} - ${p.description} - $${p.price}`;
+                        productsList.appendChild(li);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Error loading products');
+                });
+        });
+
+        // Clear Products
+        clearBtn.addEventListener('click', () => {
+            fetch('api.playground.zaikin/products/clear', { method: 'DELETE' })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    productsList.innerHTML = '';
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Error clearing products');
+                });
+        });
+
+        // Hi
+        hiBtn.addEventListener('click', () => {
+            fetch('api.playground.zaikin/products/hi')
+                .then(response => response.text())
+                .then(message => {
+                    hiMessage.textContent = message;
+                })
+                .catch(err => {
+                    console.error(err);
+                    hiMessage.textContent = 'Error calling /hi';
+                });
+        });
+
+        // Clear Hi
+        clearHiBtn.addEventListener('click', () => {
+            hiMessage.textContent = ''; // очищаем блок
+        });
+    </script>
+</body>
+
+</html>
